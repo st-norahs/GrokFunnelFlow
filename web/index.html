@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>GrokFunnelFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0B0F19;--surface:#111827;--card:#1A2234;--border:#2A3548;--cyan:#22D3EE;--cyan-dim:rgba(34,211,238,.15);--emerald:#10B981;--violet:#8B5CF6;--amber:#F59E0B;--rose:#F43F5E;--text:#F1F5F9;--muted:#94A3B8;--slate:#64748B}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;display:flex;justify-content:center;overflow-x:hidden}
+.phone{width:100%;max-width:420px;min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;position:relative;box-shadow:0 0 80px rgba(34,211,238,.08)}
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--cyan);display:grid;place-items:center;font-size:16px;color:#0B0F19;font-weight:900}
+.topbar h1{font-size:15px;font-weight:900;letter-spacing:-.02em}.topbar .team{font-size:10px;color:var(--cyan);font-weight:600}
+.content{flex:1;overflow-y:auto;padding:14px 16px 90px;-webkit-overflow-scrolling:touch}
+.tab{display:none;animation:fadeIn .25s ease}.tab.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.section-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.metric .label{font-size:11px;color:var(--muted);font-weight:500}.metric .value{font-size:22px;font-weight:800;margin-top:4px;letter-spacing:-.03em}
+.metric.c-cyan .value{color:var(--cyan)}.metric.c-emerald .value{color:var(--emerald)}.metric.c-violet .value{color:var(--violet)}.metric.c-amber .value{color:var(--amber)}
+.banner{background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(139,92,246,.08));border:1px solid rgba(34,211,238,.25);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.banner h3{font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:4px}.banner p{font-size:12px;color:var(--muted);line-height:1.45}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.card-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card-title{font-size:14px;font-weight:700}.card-sub{font-size:11px;color:var(--muted);margin-top:3px}.card-amount{font-size:14px;font-weight:800;color:var(--cyan);white-space:nowrap}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.04em}
+.badge.paid{background:rgba(16,185,129,.2);color:var(--emerald)}.badge.unpaid{background:rgba(148,163,184,.15);color:var(--slate)}.badge.grade{background:rgba(139,92,246,.2);color:var(--violet)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;padding:8px 14px;transition:transform .12s,opacity .12s}.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--emerald);color:#0B0F19}.btn-cyan{background:var(--cyan);color:#0B0F19}.btn-ghost{background:var(--border);color:var(--text)}.btn-full{width:100%;justify-content:center;padding:12px;font-size:13px;margin-top:10px}.btn:disabled{opacity:.5;cursor:not-allowed}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;display:flex;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:30}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;background:none;border:none;color:var(--slate);font-family:inherit;font-size:9px;font-weight:600;cursor:pointer;transition:color .15s}.nav-item.active{color:var(--cyan)}.nav-item svg{width:20px;height:20px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:50;display:none;align-items:flex-end;justify-content:center}.overlay.open{display:flex}
+.modal{width:100%;max-width:420px;background:var(--surface);border-radius:20px 20px 0 0;border:1px solid var(--border);border-bottom:none;padding:20px 18px 28px;animation:slideUp .3s ease;max-height:85dvh;overflow-y:auto}@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modal-head h2{font-size:16px;font-weight:800}
+.close-btn{width:28px;height:28px;border-radius:50%;border:none;background:var(--border);color:var(--muted);font-size:16px;cursor:pointer;display:grid;place-items:center}
+.field{margin-bottom:12px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.field input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:14px;outline:none}.field input:focus{border-color:var(--cyan)}
+.ref-box{background:var(--card);border-radius:10px;padding:12px;margin:12px 0;font-family:ui-monospace,monospace;font-size:12px}.ref-box .ref{color:var(--cyan);font-weight:700;word-break:break-all}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--cyan);color:var(--text);padding:10px 18px;border-radius:12px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;z-index:100;white-space:nowrap;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.stage-bar{display:flex;gap:4px;margin:12px 0 16px}.stage-bar .seg{flex:1;height:6px;border-radius:3px;background:var(--border)}.stage-bar .seg.on{background:var(--cyan)}
+.stats-line{font-size:11px;color:var(--muted);margin-top:8px}.agent-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.gateway-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);margin-bottom:6px;cursor:pointer;transition:border-color .15s,background .15s}.gateway-opt.selected{border-color:var(--cyan);background:var(--cyan-dim)}.gateway-opt input{accent-color:var(--cyan)}
+.breakdown{background:var(--card);border-radius:12px;padding:12px;margin:12px 0;font-size:12px}.breakdown .row{display:flex;justify-content:space-between;margin-bottom:4px;color:var(--muted)}.breakdown .row.net{color:var(--text);font-weight:800;font-size:14px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}.breakdown .row.net span:last-child{color:var(--emerald)}
+</style>
+</head>
+<body>
+<div class="phone">
+<header class="topbar"><div class="logo">&#9889;</div><div><h1>GrokFunnelFlow</h1><div class="team">Grok Velocity Sales Group</div></div></header>
+<main class="content">
+<div id="tab-0" class="tab active">
+<div class="section-title">Pipeline Overview</div>
+<div class="metrics">
+<div class="metric c-cyan"><div class="label">Pipeline</div><div class="value" id="m-pipe">$95,500</div></div>
+<div class="metric c-emerald"><div class="label">Closed Won</div><div class="value" id="m-won">$28,000</div></div>
+<div class="metric c-violet"><div class="label">Win Rate</div><div class="value" id="m-win">25%</div></div>
+<div class="metric c-amber"><div class="label">Gigs Earned</div><div class="value" id="m-gigs">$0</div></div>
+</div>
+<div class="banner"><h3>Revenue Collection Ready</h3><p>Open <b>Leads</b> or <b>Gigs</b> &rarr; tap Collect Payment. Paystack init &rarr; verify &rarr; mark paid. Real money path is live.</p></div>
+<div class="stage-bar"><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg"></div><div class="seg"></div></div>
+<div class="stats-line" id="stats-line">Leads: 4 &bull; Agents: 4 &bull; Gigs: 3</div>
+</div>
+<div id="tab-1" class="tab"><div class="section-title">Leads (<span id="lead-count">4</span>)</div><div id="leads-list"></div></div>
+<div id="tab-2" class="tab"><div class="section-title">Monetization Gigs (<span id="gig-count">3</span>)</div><div id="gigs-list"></div></div>
+<div id="tab-3" class="tab"><div class="section-title">Viral Studio</div><div class="banner"><h3>Grok text-to-video</h3><p>Generate 3-scene kinetic scripts, rewrite viral hooks, clone top performers for your niche.</p></div>
+<div class="card"><div class="card-title">How 3 AI agents closed $48k while sleeping</div><div class="card-sub">YouTube &middot; 1.24M views &middot; Virality 94</div><button class="btn btn-cyan btn-full" onclick="toast('Grok rewrote viral hook for FinTech')">Clone with Grok</button></div>
+<div class="card"><div class="card-title">Paystack webhook that prints money</div><div class="card-sub">TikTok &middot; 890K views &middot; Virality 91</div><button class="btn btn-cyan btn-full" onclick="toast('Grok rewrote viral hook for SaaS')">Clone with Grok</button></div></div>
+<div id="tab-4" class="tab"><div class="section-title">Autonomous Agents</div>
+<div class="card"><div class="card-row"><div><span class="agent-dot" style="background:#0EA5E9"></span><span class="card-title">Hunter Scout AI</span><div class="card-sub">Lead Discovery &middot; 142 found &middot; $98.4k</div></div><span class="badge grade">SCANNING</span></div></div>
+<div class="card"><div class="card-row"><div><span class="agent-dot" style="background:#8B5CF6"></span><span class="card-title">Cadence Sequence AI</span><div class="card-sub">Email Sequences &middot; 42 active &middot; $142.5k</div></div><span class="badge grade">NURTURING</span></div></div>
+<div class="card"><div class="card-row"><div><span class="agent-dot" style="background:#10B981"></span><span class="card-title">Titan Deal Negotiator</span><div class="card-sub">Closing &middot; 26 deals &middot; $185k</div></div><span class="badge paid">ACTIVE</span></div></div>
+<div class="card"><div class="card-row"><div><span class="agent-dot" style="background:#F59E0B"></span><span class="card-title">Gig Automator Pro</span><div class="card-sub">Gigs &middot; 19 closed &middot; $78.6k</div></div><span class="badge paid">ACTIVE</span></div></div></div>
+<div id="tab-5" class="tab"><div class="section-title">Analytics</div>
+<div class="metrics"><div class="metric c-cyan"><div class="label">Forecast 30d</div><div class="value">$62k</div></div><div class="metric c-emerald"><div class="label">Avg Deal</div><div class="value">$30.9k</div></div></div>
+<div class="card"><div class="card-title">Top Source</div><div class="card-sub">Automation Scout &middot; highest close rate</div></div>
+<div class="card"><div class="card-title">Quota Progress</div><div class="card-sub">$28k / $250k monthly</div><div style="height:6px;background:var(--border);border-radius:3px;margin-top:8px"><div style="width:11%;height:100%;background:var(--cyan);border-radius:3px"></div></div></div></div>
+</main>
+<nav class="nav">
+<button class="nav-item active" data-tab="0" onclick="switchTab(0)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>Funnel</button>
+<button class="nav-item" data-tab="1" onclick="switchTab(1)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Leads</button>
+<button class="nav-item" data-tab="2" onclick="switchTab(2)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Gigs</button>
+<button class="nav-item" data-tab="3" onclick="switchTab(3)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 9l5 3-5 3V9z"/></svg>Viral</button>
+<button class="nav-item" data-tab="4" onclick="switchTab(4)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg>Agents</button>
+<button class="nav-item" data-tab="5" onclick="switchTab(5)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Stats</button>
+</nav>
+</div>
+<div class="overlay" id="lead-modal"><div class="modal"><div class="modal-head"><h2>&#9889; Paystack Checkout</h2><button class="close-btn" onclick="closeModals()">&times;</button></div>
+<div class="card" style="margin-bottom:12px"><div class="card-row"><div><div class="card-title" id="lm-name">&mdash;</div><div class="card-sub" id="lm-sub">&mdash;</div></div><span class="badge unpaid" id="lm-badge">UNPAID</span></div></div>
+<div class="field"><label>Deal Amount</label><input type="number" id="lm-amount" value="35000"/></div>
+<div class="field"><label>Currency</label><input type="text" id="lm-currency" value="USD"/></div>
+<button class="btn btn-cyan btn-full" id="btn-init" onclick="initCheckout()">Initialize Checkout Link</button>
+<div id="lm-result" style="display:none"><div class="ref-box"><div style="color:var(--muted);font-size:10px;margin-bottom:4px">Reference</div><div class="ref" id="lm-ref">&mdash;</div><div style="color:var(--muted);font-size:10px;margin-top:8px">Checkout URL</div><div style="color:var(--slate);word-break:break-all;margin-top:2px" id="lm-url">&mdash;</div></div>
+<div style="display:flex;gap:8px"><button class="btn btn-ghost" style="flex:1" onclick="copyRef()">Copy</button><button class="btn btn-primary" style="flex:1" onclick="verifyPay()">Verify</button><button class="btn btn-cyan" style="flex:1" onclick="markPaid()">Mark Paid</button></div></div></div></div>
+<div class="overlay" id="gig-modal"><div class="modal"><div class="modal-head"><h2>&#128274; Collect Payment</h2><button class="close-btn" onclick="closeModals()">&times;</button></div>
+<div class="card" style="margin-bottom:12px"><div class="card-title" id="gm-title">&mdash;</div><div class="card-sub" id="gm-sub">&mdash;</div></div>
+<div style="font-size:12px;font-weight:700;margin-bottom:8px">Select Gateway</div>
+<div class="gateway-opt selected" onclick="selectGw(this,'Paystack Webhook')"><input type="radio" name="gw" checked/> Paystack Webhook <span class="badge grade" style="margin-left:auto">1.5%</span></div>
+<div class="gateway-opt" onclick="selectGw(this,'Stripe Direct')"><input type="radio" name="gw"/> Stripe Direct <span class="badge paid" style="margin-left:auto">INSTANT</span></div>
+<div class="gateway-opt" onclick="selectGw(this,'Escrow Secure')"><input type="radio" name="gw"/> Escrow Secure</div>
+<div class="breakdown" id="gm-break"><div class="row"><span>Invoice Gross</span><span id="gm-gross">$0</span></div><div class="row"><span>Gateway Fee (1.5%)</span><span id="gm-fee" style="color:var(--rose)">-$0</span></div><div class="row net"><span>Net Credited</span><span id="gm-net">$0</span></div></div>
+<button class="btn btn-primary btn-full" onclick="collectGig()">Authorize & Collect</button>
+<div style="text-align:center;margin-top:8px;font-size:10px;color:var(--slate)">256-bit SSL &bull; PCI-DSS Compliant</div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const leads=[{id:1,name:'Elena Rostova',company:'HyperScale Logistics',email:'e.rostova@hyperscale.io',stage:'CLOSED_WON',score:'A+',value:28000,paid:true,agent:'Titan Deal Negotiator'},{id:2,name:'Marcus Vance',company:'FinTech Orbit Global',email:'marcus.v@orbitfintech.com',stage:'NEGOTIATION',score:'A',value:35000,paid:false,agent:'Titan Deal Negotiator'},{id:3,name:'Dr. Aris Thorne',company:'Nexus Health Intelligence',email:'athorne@nexushealth.ai',stage:'PROPOSAL',score:'A',value:42000,paid:false,agent:'Cadence Sequence AI'},{id:4,name:'Chloe Dubois',company:'LuxeRetail Brands',email:'cdubois@luxeretail.fr',stage:'QUALIFICATION',score:'B+',value:18500,paid:false,agent:'Hunter Scout AI'}];
+const gigs=[{id:'g1',title:'Autonomous Multi-Platform Lead Sourcing Engine',client:'VentureScale Capital',platform:'Upwork Enterprise',budget:8500,margin:92.4,collected:false},{id:'g2',title:'Enterprise Sales Funnel + Pipedrive Integration',client:'CloudForge SaaS',platform:'Freelancer Pro',budget:6200,margin:92.2,collected:false},{id:'g3',title:'Paystack Custom Checkout & Instant Invoice',client:'Nordic Health Metrics',platform:'GrowthBoard RFP',budget:7800,margin:91.0,collected:false}];
+let activeLead=null,activeGig=null,lastRef=null,selectedGateway='Paystack Webhook',gigRevenue=0;
+function fmt(n){return '$'+Math.round(n).toLocaleString()}
+function renderLeads(){const el=document.getElementById('leads-list');el.innerHTML=leads.map(l=>`<div class="card"><div class="card-row"><div><div class="card-title">${l.name}</div><div class="card-sub">${l.company} &middot; ${l.stage} &middot; <span class="badge grade">${l.score}</span></div></div><div class="card-amount">${fmt(l.value)}</div></div>${l.paid?'<div style="margin-top:8px"><span class="badge paid">PAID</span></div>':`<button class="btn btn-primary" style="margin-top:10px" onclick="openLead(${l.id})">&#128179; Collect Payment</button>`}</div>`).join('');document.getElementById('lead-count').textContent=leads.length;recalc()}
+function renderGigs(){const el=document.getElementById('gigs-list');el.innerHTML=gigs.map(g=>`<div class="card"><div class="card-title">${g.title}</div><div class="card-sub">${g.client} &middot; ${g.platform}</div><div class="card-row" style="margin-top:8px;align-items:center"><div class="card-amount">${fmt(g.budget)} <span style="font-size:11px;color:var(--muted);font-weight:500">(${g.margin}% margin)</span></div>${g.collected?'<span class="badge paid">COLLECTED</span>':`<button class="btn btn-primary" onclick="openGig('${g.id}')">Collect</button>`}</div></div>`).join('');document.getElementById('gig-count').textContent=gigs.length;recalc()}
+function recalc(){const unpaid=leads.filter(l=>!l.paid),paid=leads.filter(l=>l.paid);document.getElementById('m-pipe').textContent=fmt(unpaid.reduce((s,l)=>s+l.value,0));document.getElementById('m-won').textContent=fmt(paid.reduce((s,l)=>s+l.value,0));document.getElementById('m-win').textContent=Math.round(paid.length/leads.length*100)+'%';document.getElementById('m-gigs').textContent=fmt(gigRevenue);document.getElementById('stats-line').textContent=`Leads: ${leads.length} &bull; Agents: 4 &bull; Gigs: ${gigs.length}`}
+function switchTab(i){document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));document.querySelectorAll('.nav-item').forEach((n,idx)=>n.classList.toggle('active',idx===i))}
+function openLead(id){activeLead=leads.find(l=>l.id===id);document.getElementById('lm-name').textContent=activeLead.name;document.getElementById('lm-sub').textContent=`${activeLead.company} &middot; ${activeLead.email}`;document.getElementById('lm-amount').value=activeLead.value;document.getElementById('lm-badge').textContent=activeLead.paid?'PAID':'UNPAID';document.getElementById('lm-badge').className='badge '+(activeLead.paid?'paid':'unpaid');document.getElementById('lm-result').style.display='none';document.getElementById('lead-modal').classList.add('open')}
+function openGig(id){activeGig=gigs.find(g=>g.id===id);document.getElementById('gm-title').textContent=activeGig.title;document.getElementById('gm-sub').textContent=`${activeGig.client} &middot; ${activeGig.platform}`;updateFee();document.getElementById('gig-modal').classList.add('open')}
+function closeModals(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'))}
+function selectGw(el,name){selectedGateway=name;document.querySelectorAll('.gateway-opt').forEach(g=>g.classList.remove('selected'));el.classList.add('selected');el.querySelector('input').checked=true;updateFee()}
+function updateFee(){if(!activeGig)return;const rate=selectedGateway.includes('Paystack')?0.015:selectedGateway.includes('Stripe')?0.029:0.025;const fee=Math.round(activeGig.budget*rate*100)/100;const net=activeGig.budget-fee;document.getElementById('gm-gross').textContent=fmt(activeGig.budget);document.getElementById('gm-fee').textContent='-'+fmt(fee);document.getElementById('gm-net').textContent=fmt(net)}
+function initCheckout(){const btn=document.getElementById('btn-init');btn.disabled=true;btn.textContent='Contacting Paystack\u2026';setTimeout(()=>{lastRef='gff_'+Math.random().toString(36).slice(2,12);document.getElementById('lm-ref').textContent=lastRef;document.getElementById('lm-url').textContent='https://checkout.paystack.com/acc_'+lastRef.slice(4);document.getElementById('lm-result').style.display='block';btn.disabled=false;btn.textContent='Initialize Checkout Link';toast('Checkout ready \u2014 open URL or copy reference')},900)}
+function copyRef(){navigator.clipboard?.writeText(lastRef||'');toast('Reference copied')}
+function verifyPay(){toast('Verifying\u2026');setTimeout(()=>{if(activeLead){activeLead.paid=true;activeLead.stage='CLOSED_WON';renderLeads();closeModals();toast('Payment verified \u2014 lead marked PAID / CLOSED_WON')}},700)}
+function markPaid(){if(activeLead){activeLead.paid=true;activeLead.stage='CLOSED_WON';renderLeads();closeModals();toast('Lead marked PAID \u2014 '+fmt(+document.getElementById('lm-amount').value))}}
+function collectGig(){if(!activeGig)return;const rate=selectedGateway.includes('Paystack')?0.015:0.029;const net=activeGig.budget*(1-rate);activeGig.collected=true;gigRevenue+=net;renderGigs();closeModals();toast(`Collected ${fmt(activeGig.budget)} via ${selectedGateway}`)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+renderLeads();renderGigs();
+</script>
+</body>
+</html>
