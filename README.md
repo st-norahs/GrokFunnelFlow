@@ -1,87 +1,77 @@
 # GrokFunnelFlow
 
-**Sales funnel automation dashboard fully adapted for xAI Grok.**
+**Sales funnel + payment collection powered by xAI Grok.**  
+Close deals → Collect via Paystack → Fund your Grok upgrade.
 
-Original: private `st-norahs/Prompt-Audits` (FunnelFlow + Gemini).  
-Adapted: complete Grok-powered rewrite with expanded modules.
+## See it now (no install)
+
+| Link | |
+|------|--|
+| **[Interactive web UI](https://htmlpreview.github.io/?https://github.com/st-norahs/GrokFunnelFlow/blob/main/web/index.html)** | Click Leads/Gigs → Collect Payment |
+| [CDN mirror](https://cdn.jsdelivr.net/gh/st-norahs/GrokFunnelFlow@main/web/index.html) | Same demo |
+
+## Go live & make money
+
+Full playbook: **[docs/GO_LIVE_REVENUE.md](docs/GO_LIVE_REVENUE.md)**
+
+1. Create Paystack account → live API keys in `.env`  
+2. Open app → **Leads** or **Gigs** → **Collect Payment**  
+3. Client pays → Verify / Mark Paid → cash in Paystack → withdraw  
+4. Use Grok (Viral + Sequences) to fill the pipeline  
+
+One closed deal or two high-margin gigs can cover SuperGrok + API usage.
 
 ## Features
 
-- **Lead CRM & Pipeline** – custom stages, scoring, filtering, search
-- **Autonomous Agents & Sequences** – Grok-generated email copy and cadence
-- **Viral Studio** – Text-to-Video script generation via Grok + viral radar + auto-poster
-- **Paystack Integration** – payments, webhooks, lead monetization
-- **Advanced Analytics** – forecast, source performance, team comparison, trends
-- **Gig Scanner** – high-margin monetization opportunities
-- **Grok Core** – real xAI API client (OpenAI-compatible)
+- **Lead CRM & Pipeline** – stages, scoring, Collect Payment (Paystack)
+- **Autonomous Agents & Sequences** – Grok-generated email copy
+- **Viral Studio** – Grok text-to-video scripts + viral clone
+- **Paystack** – init, verify, gig collection, net revenue logging
+- **Analytics** – pipeline value, win rate, gig earnings
+- **Grok Core** – xAI API (OpenAI-compatible)
 
-## Quick Start
+## Android quick start
 
 ```bash
-# 1. Clone
 git clone https://github.com/st-norahs/GrokFunnelFlow.git
 cd GrokFunnelFlow
-
-# 2. Secrets
 cp .env.example .env
-# Add your key:
 # XAI_API_KEY=xai-...
-# GROK_MODEL=grok-4
-
-# 3. Open in Android Studio (AGP 8+, Kotlin 2.0+, Compose)
-# Sync Gradle → Run on device/emulator (minSdk 24)
+# PAYSTACK_SECRET_KEY=sk_live_...   # live keys = real money
+# PAYSTACK_PUBLIC_KEY=pk_live_...
 ```
+
+Open in **Android Studio** → Sync Gradle → Run (minSdk 24).
+
+Studio will fetch the Gradle distribution from `gradle/wrapper/gradle-wrapper.properties` on first sync.
 
 ## Environment
 
-```
+```env
 XAI_API_KEY=your_xai_key_here
 GROK_MODEL=grok-4
-# Optional Paystack
-PAYSTACK_SECRET_KEY=sk_test_...
-PAYSTACK_PUBLIC_KEY=pk_test_...
+PAYSTACK_SECRET_KEY=sk_live_...   # or sk_test_ for sandbox
+PAYSTACK_PUBLIC_KEY=pk_live_...
 ```
 
 ## Architecture
 
 ```
 com.grokfunnel
-├── data
-│   ├── local          # Room DB, DAOs, entities
-│   ├── remote
-│   │   ├── grok       # GrokApiService (new)
-│   │   └── paystack   # Paystack + webhooks
-│   └── repository     # FunnelRepository (expanded)
-├── domain             # LeadScoringEngine (hybrid rules + Grok)
-└── ui
-    ├── viral          # ViralStudio + TextToVideo (Grok scripts)
-    ├── agents         # Agents & Sequences (Grok copy)
-    ├── leads          # Lead management
-    ├── dashboard      # Main funnel dashboard
-    ├── analytics      # Advanced analytics
-    └── viewmodel      # FunnelViewModel (Grok wired)
+├── data/local          # Room + DAOs + seed
+├── data/remote/grok    # GrokApiService
+├── data/remote/paystack
+├── data/repository     # FunnelRepository + payment helpers
+├── domain              # LeadScoringEngine
+└── ui                  # Dashboard, Leads, Gigs, payment dialogs
 ```
 
-## Key Grok Integrations
+## Docs
 
-| Module              | Grok Usage                                      |
-|---------------------|-------------------------------------------------|
-| Text-to-Video       | Generate 3-scene viral scripts + hooks + CTA    |
-| Agents / Sequences  | Generate subject lines + body copy              |
-| Lead Scoring        | Optional enrichment + insight summary           |
-| Viral Radar clone   | Rewrite viral hooks into new niche scripts      |
-
-## Deploy
-
-### Local APK
-```bash
-./gradlew assembleRelease
-# APK: app/build/outputs/apk/release/app-release.apk
-```
-
-### GitHub Releases
-Push a tag → GitHub Actions builds and attaches the APK.
+- [GO_LIVE_REVENUE.md](docs/GO_LIVE_REVENUE.md) — revenue path  
+- [REVENUE_COLLECTION_PLUG.md](docs/REVENUE_COLLECTION_PLUG.md) — Paystack plug design  
+- [ADAPTATION.md](ADAPTATION.md) — Gemini → Grok notes  
 
 ## License
 
-MIT – adapted from original FunnelFlow structure for Grok.
+MIT — adapted from FunnelFlow structure for Grok.
