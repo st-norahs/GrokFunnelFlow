@@ -1,0 +1,6 @@
+{
+  "name": "GrokFunnelFlow",
+  "description": "Sales funnel dashboard with real-time conversion tracking, lead automation, viral text-to-video, gig scanner and Paystack — fully powered by xAI Grok.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GROK_API"]
+}
